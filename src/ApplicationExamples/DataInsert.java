@@ -1,16 +1,12 @@
-package Application;
+package ApplicationExamples;
 
 import db.DB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.ResultSet;
 
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 public class DataInsert {
     public static void main(String[] args){

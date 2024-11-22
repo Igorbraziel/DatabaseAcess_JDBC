@@ -7,16 +7,23 @@ import model.entities.Department;
 import model.entities.Seller;
 
 import model.dao.SellerDao;
+import model.dao.impl.SellerDaoJDBC;
 import model.dao.DaoFactory;
+
+import java.util.List;
 
 public class Program {
     public static void main(String[] args) {
         Locale.setDefault(Locale.US);
 
+        System.out.println("==============TEST-findById==============");
         SellerDao sellerDao = DaoFactory.createSellerDao();
-
         Seller seller = sellerDao.findById(2);
-
         System.out.println(seller);
+
+        System.out.println("\n==============TEST-findByDepartment==============");
+        Department department1 = new Department(2, "Eletronics");
+        List<Seller> sellersList = ((SellerDaoJDBC) sellerDao).findByDepartment(department1);
+        sellersList.forEach(System.out::println);;
     }
 }

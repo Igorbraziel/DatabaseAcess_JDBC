@@ -39,7 +39,8 @@ public class DepartmentDaoJDBC implements DepartmentDao {
         try {
             conn = DB.getConnection();
             statement = conn.createStatement();
-            String sqlQuery = String.format("SELECT * FROM department WHERE Id = %d", id);
+            String sqlQuery = String.format("SELECT * FROM department" +
+                                            " WHERE Id = %d", id);
             resultSet = statement.executeQuery(sqlQuery);
 
             String departmentName = resultSet.getString("Name");

@@ -64,12 +64,55 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void update(Seller obj){
+        PreparedStatement preparedStatement = null;
 
+        try {
+            String sqlQuery = "UPDATE seller " +
+                            "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
+                            "WHERE Id = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, obj.getName());
+            preparedStatement.setString(2, obj.getEmail());
+            preparedStatement.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            preparedStatement.setDouble(4, obj.getBaseSalary());
+            preparedStatement.setInt(5, obj.getDepartment().getId());
+            preparedStatement.setInt(6, obj.getId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0){
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if(resultSet.next()){
+                    System.out.println("Successful update");
+                }
+                DB.closeResultSet(resultSet);
+            } else {
+                throw new DbException("Unexpected error, update failure!");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(preparedStatement);
+        }
     }
 
     @Override
     public void deleteById(Integer id){
+        PreparedStatement preparedStatement = null;
 
+        try {
+            String sqlQuery = "DELETE FROM seller WHERE Id = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e){
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(preparedStatement);
+        }
     }
 
     @Override

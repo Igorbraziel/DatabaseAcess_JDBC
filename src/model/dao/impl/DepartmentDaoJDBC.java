@@ -15,6 +15,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
+    private Connection conn;
+
+    public DepartmentDaoJDBC(Connection conn){
+        this.conn = conn;
+    }
+
     @Override
     public void insert(Department obj){
 
@@ -32,25 +38,30 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public Department findById(Integer id){
-        Connection conn = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
-            conn = DB.getConnection();
-            statement = conn.createStatement();
-            String sqlQuery = String.format("SELECT * FROM department" +
-                                            " WHERE Id = %d", id);
-            resultSet = statement.executeQuery(sqlQuery);
+            String sqlQuery = "SELECT department.Name FROM department " +
+                                "WHERE Id = ?";
+            preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setInt(1, id);
 
-            String departmentName = resultSet.getString("Name");
-            if(departmentName != null){
-                return new Department(id, departmentName);
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                String departmentName = resultSet.getString("Name");
+                if(departmentName != null){
+                    return new Department(id, departmentName);
+                }
             }
-            return null;
         } catch (SQLException e){
             throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(preparedStatement);
+            DB.closeResultSet(resultSet);
         }
+        return null;
     }
 
     @Override

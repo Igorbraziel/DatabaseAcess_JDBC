@@ -30,7 +30,7 @@ public class Program {
         sellersList = sellerDao.findAll();
         sellersList.forEach(System.out::println);
 
-        System.out.println("\n==============TEST-insert==============");
-        sellerDao.insert(new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, department1));
+        System.out.println("\n==============TEST-Delete==============");
+        sellerDao.deleteById(10);
     }
 }
